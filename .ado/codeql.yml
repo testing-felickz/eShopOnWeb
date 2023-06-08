@@ -23,5 +23,7 @@ steps:
     targetType: 'inline'
     script: |
       # Write your PowerShell commands here.
-      Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
-      ##codeql --version
+      $codeqlPath = Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
+      $codeql = "$codeqlPath\codeql.exe"
+      &$codeql --version
+      
