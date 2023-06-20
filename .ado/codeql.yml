@@ -10,7 +10,11 @@ pool:
   vmImage: windows-latest
 
 steps:
-- script: Write-Host $env:CODEQL_DIST  
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+     Write-Host $env:CODEQL_DIST  
 
 #C:\hostedtoolcache\windows\CodeQL
 - task: PowerShell@2
