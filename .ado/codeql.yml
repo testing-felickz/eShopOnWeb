@@ -10,27 +10,21 @@ pool:
   vmImage: windows-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
+#C:\hostedtoolcache\windows\CodeQL
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
       # Write your PowerShell commands here.
-      $codeqlPath = Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
+      $codeqlPath = Get-ChildItem -Path 'C:\hostedtoolcache\\windows\CodeQL\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
       $codeql = "$codeqlPath\codeql.exe"
       &$codeql --version
 
 - task: PowerShell@2
   inputs:
     script: |
-     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
+     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\\windows\CodeQL\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
 
 - task: PowerShell@2
   inputs:
