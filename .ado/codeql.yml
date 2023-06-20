@@ -32,5 +32,5 @@ steps:
 - pwsh: |
       cd $(Build.SourcesDirectory)
       codeql database create codeql-db --language=csharp
-      codeql database analyze codeql-db --format=sarif-latest --output=results.sarif
-      codeql github upload-results --sarif=results.sarif --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth $(Token)
+      codeql database analyze codeql-db --format=sarif-latest --output=results.sarif --sarif-category="language:csharp"
+      $(Token) | codeql github upload-results --sarif=results.sarif --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth-stdin
