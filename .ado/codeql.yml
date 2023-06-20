@@ -10,7 +10,7 @@ pool:
   vmImage: windows-latest
 
 steps:
-- script: 
+- script: Write-Host $env:CODEQL_DIST  
 
 #C:\hostedtoolcache\windows\CodeQL
 - task: PowerShell@2
