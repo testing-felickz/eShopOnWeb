@@ -26,4 +26,13 @@ steps:
       $codeqlPath = Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
       $codeql = "$codeqlPath\codeql.exe"
       &$codeql --version
-      
+
+- task: PowerShell@2
+  inputs:
+    script: |
+     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\' -Filter 'codeql.exe' -Recurse | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
+
+- task: PowerShell@2
+  inputs:
+    script: |
+      codeql --version
