@@ -35,6 +35,7 @@ steps:
 - pwsh: |
       $codeqlDbDir = "$(Agent.TempDirectory)/codeqldbs"
       $sarifDir = "$(Agent.TempDirectory)/out"
+      if (!(Test-Path $sarifDir)) { New-Item -ItemType Directory -Force -Path $sarifDir }
       codeql database create "$codeqlDbDir" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds
       codeql database analyze "$codeqlDbDir/csharp" --format=sarif-latest --output="$sarifDir/csharp.sarif" --sarif-category="language:csharp"
       "$(Token)" | codeql github upload-results --sarif="$sarifDir/csharp.sarif" --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth-stdin
