@@ -33,7 +33,7 @@ steps:
   displayName: Verify CodeQL Version using codeql.exe from PATH
 
 - pwsh: |
-      $codeqlDbDir = "$(Agent.TempDirectory)/codeqldbs"
+      $codeqlDbDir = "$(Agent.TempDirectory)/advancedsecurity.codeql"
       $sarifDir = "$(Agent.TempDirectory)/out"
       if (!(Test-Path $sarifDir)) { New-Item -ItemType Directory -Force -Path $sarifDir }
       codeql database create "$codeqlDbDir" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds
