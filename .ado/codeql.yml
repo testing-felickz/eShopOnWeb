@@ -24,9 +24,9 @@ steps:
 #       &$codeql --version
 
 #C:\hostedtoolcache\windows\CodeQL
-# - pwsh: |
-#      Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
-#   displayName: Set codeql.exe to PATH on windows
+- pwsh: |
+     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
+  displayName: Set codeql.exe to PATH on windows
 
 - pwsh: |
       codeql --version
