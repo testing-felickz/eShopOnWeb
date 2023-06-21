@@ -41,8 +41,8 @@ steps:
 
 - pwsh: |
       codeql database create "$codeqlDbDir" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds
-      codeql database analyze "$codeqlDbDir/csharp" --format=sarif-latest --output="$sarifDir/csharp.sarif" --sarif-category="language:csharp"
+      codeql database analyze "$codeqlDbDir/csharp" csharp-security-experimental.qls --format=sarif-latest --output="$sarifDir/csharp.sarif" --sarif-category="language:csharp" 
       "$(Token)" | codeql github upload-results --sarif="$sarifDir/csharp.sarif" --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth-stdin
-      codeql database analyze "$codeqlDbDir/javascript" --format=sarif-latest --output="$sarifDir/javascript.sarif" --sarif-category="language:javascript"      
+      codeql database analyze "$codeqlDbDir/javascript" javascript-security-experimental.qls --format=sarif-latest --output="$sarifDir/javascript.sarif" --sarif-category="language:javascript"
       "$(Token)" | codeql github upload-results --sarif="$sarifDir/javascript.sarif" --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth-stdin
   displayName: Run CodeQL CLI Commands
