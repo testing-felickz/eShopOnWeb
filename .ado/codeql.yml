@@ -23,19 +23,23 @@ steps:
 #       $codeql = "$codeqlPath\codeql.exe"
 #       &$codeql --version
 
-#C:\hostedtoolcache\windows\CodeQL
+
 - pwsh: |
-     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"
-  displayName: Set codeql.exe to PATH on windows
+     # codeql.exe to PATH on windows C:\hostedtoolcache\windows\CodeQL ...
+     Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"     
+     # setup codeql working directories 
+     $codeqlDbDir = "$(Agent.TempDirectory)/advancedsecurity.codeql"
+     $sarifDir = "$(Agent.TempDirectory)/out"
+     if (!(Test-Path $sarifDir)) { New-Item -ItemType Directory -Force -Path $sarifDir }
+     Write-Host "##vso[task.setvariable variable=codeqlDbDir;]$codeqlDbDir"
+     Write-Host "##vso[task.setvariable variable=sarifDir;]$sarifDir"
+  displayName: Configure Runtime Environment
 
 - pwsh: |
       codeql --version
   displayName: Verify CodeQL Version using codeql.exe from PATH
 
 - pwsh: |
-      $codeqlDbDir = "$(Agent.TempDirectory)/advancedsecurity.codeql"
-      $sarifDir = "$(Agent.TempDirectory)/out"
-      if (!(Test-Path $sarifDir)) { New-Item -ItemType Directory -Force -Path $sarifDir }
       codeql database create "$codeqlDbDir" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds
       codeql database analyze "$codeqlDbDir/csharp" --format=sarif-latest --output="$sarifDir/csharp.sarif" --sarif-category="language:csharp"
       "$(Token)" | codeql github upload-results --sarif="$sarifDir/csharp.sarif" --commit $(Build.SourceVersion) --ref $(Build.SourceBranch) --github-auth-stdin
