@@ -23,7 +23,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: 'windows-2022'
+    runs-on: ${{ matrix.os }}
     permissions:
       actions: read
       contents: read
@@ -33,6 +33,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'csharp', 'javascript' ]
+        os: ['ubuntu-latest', 'windows-2022']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
@@ -51,13 +52,24 @@ jobs:
         # By default, queries listed here will override any specified in a config file.
         # Prefix the list here with "+" to use these queries and those in the config file.
         queries: security-extended
+        threads: 1
 
-    - name: codeql resolve ram
+    - if: matrix.os == 'windows-2022'
+      name: codeql resolve ram win
       run: |
         $base_dir = "C:\hostedtoolcache\windows\CodeQL"
         $latest_version = Get-ChildItem $base_dir | Sort-Object -Property Name -Descending | Select-Object -First 1
         $codeql_path = Join-Path $base_dir $latest_version.Name "x64\codeql\codeql.exe"
         & $codeql_path resolve ram
+
+    - if: matrix.os == 'ubuntu-latest'
+      name: codeql resolve ram ubuntu
+      run: |
+        base_dir="/opt/hostedtoolcache/CodeQL"
+        latest_version=$(ls $base_dir | sort -V | tail -n 1)
+        codeql_path=$base_dir/$latest_version/x64/codeql/codeql
+        $codeql_path resolve ram
+        displayName: CodeQL Resolve RAM Ubuntu
         
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
