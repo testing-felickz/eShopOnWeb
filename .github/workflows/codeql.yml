@@ -54,7 +54,10 @@ jobs:
 
     - name: codeql resolve ram
       run: |
-        codeql resolve ram
+        $base_dir = "C:\hostedtoolcache\windows\CodeQL"
+        $latest_version = Get-ChildItem $base_dir | Sort-Object -Property Name -Descending | Select-Object -First 1
+        $codeql_path = Join-Path $base_dir $latest_version.Name "x64\codeql\codeql.exe"
+        & $codeql_path resolve ram
         
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
