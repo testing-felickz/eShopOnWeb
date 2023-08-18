@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: windows-2022 #ubuntu-latest
+  vmImage: $(os)
 
 variables:  
   # AzDO - Verbose Logs
@@ -19,21 +19,30 @@ variables:
   # CodeQL - Log Level (0 = (none), 1 = --verbosity=progress++, 2 = --verbosity=progress+++)
   advancedsecurity.codeql.logLevel: 2
 
-steps:
-# - script: |
-#     base_dir="/opt/hostedtoolcache/CodeQL"
-#     latest_version=$(ls $base_dir | sort -V | tail -n 1)
-#     codeql_path=$base_dir/$latest_version/x64/codeql/codeql
-#     $codeql_path resolve ram
-#   displayName: CodeQL Resolve RAM Ubuntu
+strategy:
+  matrix:
+    windows:
+      os: windows-latest
+    linux:
+      os: ubuntu-latest
 
+steps:
+- script: |
+     base_dir="/opt/hostedtoolcache/CodeQL"
+     latest_version=$(ls $base_dir | sort -V | tail -n 1)
+     codeql_path=$base_dir/$latest_version/x64/codeql/codeql
+     $codeql_path resolve ram
+  displayName: CodeQL Resolve RAM Ubuntu
+  condition: and(succeeded(), eq(variables.os, 'ubuntu-latest'))
+   
 - pwsh: |
     $base_dir = "C:\hostedtoolcache\windows\CodeQL"
     $latest_version = Get-ChildItem $base_dir | Sort-Object -Property Name -Descending | Select-Object -First 1
     $codeql_path = Join-Path $base_dir $latest_version.Name "x64\codeql\codeql.exe"
     & $codeql_path resolve ram
   displayName: CodeQL Resolve RAM Windows
-  
+  condition: and(succeeded(), eq(variables.os, 'windows-latest'))
+
 - task: AdvancedSecurity-Codeql-Init@1
   inputs:
     languages: 'csharp, javascript'
