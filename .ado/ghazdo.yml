@@ -1,0 +1,48 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: windows-2022 #ubuntu-latest
+
+variables:  
+  # AzDO - Verbose Logs
+  system.debug: 'true'
+  # CodeQL - Debug Mode
+  advancedsecurity.codeql.debug: true
+  # CodeQL - Upload all sarif and log artifacts
+  advancedsecurity.codeql.debug.uploadall: true
+  # CodeQL - Log Level (0 = (none), 1 = --verbosity=progress++, 2 = --verbosity=progress+++)
+  advancedsecurity.codeql.logLevel: 2
+
+steps:
+# - script: |
+#     base_dir="/opt/hostedtoolcache/CodeQL"
+#     latest_version=$(ls $base_dir | sort -V | tail -n 1)
+#     codeql_path=$base_dir/$latest_version/x64/codeql/codeql
+#     $codeql_path resolve ram
+#   displayName: CodeQL Resolve RAM Ubuntu
+
+- pwsh: |
+    $base_dir = "C:\hostedtoolcache\windows\CodeQL"
+    $latest_version = Get-ChildItem $base_dir | Sort-Object -Property Name -Descending | Select-Object -First 1
+    $codeql_path = Join-Path $base_dir $latest_version.Name "x64\codeql\codeql.exe"
+    & $codeql_path resolve ram
+  displayName: CodeQL Resolve RAM Windows
+  
+- task: AdvancedSecurity-Codeql-Init@1
+  inputs:
+    languages: 'csharp, javascript'
+    querysuite: 'security-extended'
+    threads: 1
+- task: AdvancedSecurity-Codeql-Autobuild@1
+- task: AdvancedSecurity-Dependency-Scanning@1
+- task: AdvancedSecurity-Codeql-Analyze@1
+  #inputs:
+    #querysuite: 'security-experimental'
+    #ram: 6144
+- task: AdvancedSecurity-Publish@1
