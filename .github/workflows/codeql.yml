@@ -68,8 +68,7 @@ jobs:
         base_dir="/opt/hostedtoolcache/CodeQL"
         latest_version=$(ls $base_dir | sort -V | tail -n 1)
         codeql_path=$base_dir/$latest_version/x64/codeql/codeql
-        $codeql_path resolve ram
-        displayName: CodeQL Resolve RAM Ubuntu
+        $codeql_path resolve ram        
         
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
