@@ -1,6 +1,8 @@
 # CodeQL Sample Windows Pipeline
 # Assumes that this is running on Microsoft hosted runners using standard windows image
 #   - CodeQL latest version is pre-installed into the path: C:\hostedtoolcache\windows\CodeQL\ (RUNNER_TOOL_CACHE env variable)
+# TODO 
+#   - Verify upload-results works on PR branch with --ref $(Build.SourceBranch)
 
 trigger:
 - main
