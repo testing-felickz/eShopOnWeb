@@ -1,7 +1,6 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# CodeQL Sample Windows Pipeline
+# Assumes that this is running on Microsoft hosted runners using standard windows image
+#   - CodeQL latest version is pre-installed into the path: C:\hostedtoolcache\windows\CodeQL\ (RUNNER_TOOL_CACHE env variable)
 
 trigger:
 - main
@@ -17,13 +16,6 @@ steps:
      Write-Host "Agent.TempDirectory: $(Agent.TempDirectory)"
   displayName: Debugging Directories
 
-# - pwsh: |
-#       # Write your PowerShell commands here.
-#       $codeqlPath = Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName
-#       $codeql = "$codeqlPath\codeql.exe"
-#       &$codeql --version
-
-
 - pwsh: |
      # codeql.exe to PATH on windows C:\hostedtoolcache\windows\CodeQL ...
      Write-Host "##vso[task.prependpath]$(Get-ChildItem -Path 'C:\hostedtoolcache\windows\CodeQL\' -Filter 'codeql.exe' -Recurse -Depth 3 | Select-Object -Last 1 | Select-Object -ExpandProperty DirectoryName)"     
@@ -33,7 +25,7 @@ steps:
      if (!(Test-Path $sarifDir)) { New-Item -ItemType Directory -Force -Path $sarifDir }
      Write-Host "##vso[task.setvariable variable=codeqlDbDir;]$codeqlDbDir"
      Write-Host "##vso[task.setvariable variable=sarifDir;]$sarifDir"
-  displayName: Configure Runtime Environment
+  displayName: Configure CodeQL Runtime Environment
 
 - pwsh: |
       codeql --version
