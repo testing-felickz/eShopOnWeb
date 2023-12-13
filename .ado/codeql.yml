@@ -35,12 +35,12 @@ steps:
 
 - pwsh: |
       # Insted of using the CodeQL autobuilder, specify build commands via additional property: --command="build.sh" 
-      codeql database create "$(codeqlDbDir)" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds --ram=5500
+      codeql database create "$(codeqlDbDir)" --language=csharp,javascript --db-cluster --no-run-unnecessary-builds --threads=0 --ram=5500
   displayName: CodeQL Database Create (autobuild)
   
 - pwsh: |      
-      codeql database analyze "$(codeqlDbDir)/csharp" csharp-security-experimental.qls --format=sarif-latest --output="$(sarifDir)/csharp.sarif" --sarif-category="language:csharp" --ram=5500
-      codeql database analyze "$(codeqlDbDir)/javascript" javascript-security-experimental.qls --format=sarif-latest --output="$(sarifDir)/javascript.sarif" --sarif-category="language:javascript"
+      codeql database analyze "$(codeqlDbDir)/csharp" csharp-security-experimental.qls --format=sarif-latest --output="$(sarifDir)/csharp.sarif" --sarif-category="language:csharp" --threads=0 --ram=5500
+      codeql database analyze "$(codeqlDbDir)/javascript" javascript-security-experimental.qls --format=sarif-latest --output="$(sarifDir)/javascript.sarif" --sarif-category="language:javascript" --threads=0 --ram=5500
   displayName: CodeQL Analyze
 
 - pwsh: |
