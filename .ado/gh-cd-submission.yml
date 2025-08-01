@@ -13,11 +13,11 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-# - script: dotnet restore eShopOnWeb.sln
-#   displayName: NuGet Restore
+- script: dotnet restore eShopOnWeb.sln
+  displayName: NuGet Restore
 
 - task: component-detection-github-submission-task@0
   inputs:
     githubRepository: 'testing-felickz/eShopOnWeb'
-    token: 'xyz'
+    token: '$(GH_TOKEN)'
     filePath: '$(Build.SourcesDirectory)'
